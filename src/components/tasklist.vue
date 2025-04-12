@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick } from 'vue';
 import type { Task } from './types';
+import Vuedraggable from 'vuedraggable';  
 
 const props = defineProps<{
   tasks: Task[];
@@ -25,6 +26,8 @@ watch(editingId, async (id) => {
     editingIdRef.value?.select();
   }
 });
+
+
 </script>
 
 <template>
@@ -35,35 +38,40 @@ watch(editingId, async (id) => {
     <button @click.prevent="emit('clearAll')">Clear All</button>
   </div>
 
-  <TransitionGroup name="list" tag="div" class="classlist">
-    <article v-for="task in tasks" :key="task.id" class="task">
-      <input
-        type="checkbox"
-        :checked="task.done"
-        @click="emit('toggleDone', task.id, task)"
-      />
-      <span
-        :class="{ done: task.done }"
-        class="tasktitle"
-        v-if="editingId !== task.id"
-        @dblclick="editingId = task.id"
-      >
-        {{ task.title }}
-      </span>
-      <input
-        v-else
-        v-model="task.title"
-        @keyup.enter="editingId = ''"
-        @blur="editingId = ''"
-        @keyup.esc="editingId = ''"
-        class="editinput"
-        ref="editingIdRef"
-      />
-      <button class="removebut outline" @click.prevent="emit('removeTask', task.id)">
-        Remove
-      </button>
-    </article>
-  </TransitionGroup>
+  <Vuedraggable 
+    :list="tasks" 
+    class="draggable-list" 
+    item-key="id" >
+    <template #item="{ element }">
+      <article :key="element.id" class="task">
+        <input
+          type="checkbox"
+          :checked="element.done"
+          @click="emit('toggleDone', element.id, element)"
+        />
+        <span
+          :class="{ done: element.done }"
+          class="tasktitle"
+          v-if="editingId !== element.id"
+          @dblclick="editingId = element.id"
+        >
+          {{ element.title }}
+        </span>
+        <input
+          v-else
+          v-model="element.title"
+          @keyup.enter="editingId = ''"
+          @blur="editingId = ''"
+          @keyup.esc="editingId = ''"
+          class="editinput"
+          ref="editingIdRef"
+        />
+        <button class="removebut outline" @click.prevent="emit('removeTask', element.id)">
+          Remove
+        </button>
+      </article>
+    </template>
+  </Vuedraggable>
 
   <div class="donelist">
     <div class="doneheader" v-if="donelist.length">
@@ -94,6 +102,7 @@ button {
   display: flex;
   align-items: center;
 }
+
 .tasktitle {
   justify-self: start;
   flex-grow: 1;
@@ -104,6 +113,7 @@ button {
   text-decoration: line-through;
   color: gray;
 }
+
 .doneheader {
   display: flex;
   align-items: center;
@@ -111,11 +121,14 @@ button {
   padding: 20px;
   transition: all 0.5s ease;
 }
+
 .tasksheader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   transition: all 0.5s ease;
+  margin-bottom: 1rem;
+
 }
 
 .removebut {
@@ -123,16 +136,7 @@ button {
   scale: 0.8;
 }
 
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
 
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(300px);
-}
 
 .editinput {
   width: 100%;
