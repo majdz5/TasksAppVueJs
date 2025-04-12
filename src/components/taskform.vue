@@ -45,6 +45,6 @@ function addTask(){
         </small>    
         </div>
     </form>
-    <h2>{{ newTask   }}</h2>
+   
   </main>
 </template>
