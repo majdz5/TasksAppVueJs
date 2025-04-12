@@ -108,6 +108,12 @@ watch(tasksdone, (newDone)=> {
 </template>
 
 <style>
+*{
+  box-sizing: border-box;
+  margin: 20p;
+  padding: 0;
+}
+
 .button-container{
 display:  flex;
 justify-content: end;

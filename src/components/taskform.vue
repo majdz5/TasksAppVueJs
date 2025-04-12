@@ -47,4 +47,18 @@ function addTask(){
     </form>
    
   </main>
+
+
 </template>
+<style>
+
+main {
+  margin-bottom: 150px;
+  margin-top: 30px;
+  position: sticky;
+  top: 5%;
+  background: transparent;
+  backdrop-filter: blur(15px);
+  height: fit-content;
+}
+</style>
