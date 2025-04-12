@@ -39,12 +39,13 @@ const donelist = ref<Task[]>([]);
 const tasksdone = ref<Task[]>([]);
 function toggleDone ( id: string, task: Task){
   const taskI = tasks.value.find((task) => task.id === id);
-
+  const taskDoneI = tasksdone.value.find((task)=> task.id === id)
   if (taskI){
     taskI.done = !taskI.done;
     if (taskI.done){
+    
+      if( !taskDoneI){donelist.value.push(taskI);}
       tasksdone.value.push(taskI);
-      donelist.value.push(taskI);
     } else {
       tasksdone.value = tasksdone.value.filter((task) => task.id !== id);
       donelist.value = donelist.value.filter((task)=> task.id !== id);
@@ -73,6 +74,7 @@ function clearDone(){
     if (task.done) task.done = false;
   });
   donelist.value = [];
+  tasksdone.value = [];
 }
 
 
@@ -100,7 +102,7 @@ watch(tasksdone, (newDone)=> {
   :donelist="donelist"
   @remove-task="Removetask"
   @clear-done="clearDone"
-  @clear-all="tasks = []; donelist =[]"
+  @clear-all="tasks = []; donelist =[]; tasksdone = []"
 /> 
 </main>
 </template>
